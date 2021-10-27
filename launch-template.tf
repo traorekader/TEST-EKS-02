@@ -19,7 +19,7 @@ resource "aws_launch_template" "worker" {
   }
 
   instance_type = var.workers_instance_type
-
+  image_id      = data.aws_ami.eks_ami.id
 
   network_interfaces {
     associate_public_ip_address = false
