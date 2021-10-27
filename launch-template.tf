@@ -20,6 +20,7 @@ resource "aws_launch_template" "worker" {
 
   instance_type = var.workers_instance_type
   image_id      = data.aws_ami.eks_ami.id
+  key_name      = aws_key_pair.deployer.key_name
 
   network_interfaces {
     associate_public_ip_address = false
@@ -50,8 +51,12 @@ resource "aws_launch_template" "worker" {
     }
   }
 
-
   lifecycle {
     create_before_destroy = true
   }
+}
+
+resource "aws_key_pair" "deployer" {
+  key_name   = "deployer-key"
+  public_key = file("./credentials/mykey.pub")
 }
