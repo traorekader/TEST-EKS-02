@@ -1,2 +1,10 @@
 .terraform/*
 .envrc
+credentials/*
+*.tfstate
+kubeconfig*
+# User cluster configs
+.kubeconfig
+.terraform*
+terraform.*
+*.tfplan

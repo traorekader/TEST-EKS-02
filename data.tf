@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 data "aws_ami" "eks_ami" {
   most_recent = true
   owners      = ["amazon"]

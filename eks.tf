@@ -4,19 +4,28 @@ resource "random_pet" "this" {
 
 module "eks_cluster" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "13.2.1"
+  version = ">= 17.0.0"
 
   cluster_name                          = local.cluster_name
   cluster_version                       = var.kubernetes_version
-  subnets                               = module.vpc.private_subnets
+  subnets                               = module.vpc.public_subnets
   vpc_id                                = module.vpc.vpc_id
   cluster_endpoint_private_access_cidrs = ["0.0.0.0/0"]
 
+  // enable_irsa = true
+
   #   write_kubeconfig = true
+
+  # ERROR Creating EKS Node Group: InvalidRequestException: Cannot specify instance types in launch template and API Request
+  # resolved it by adding instance_types=[] to node_groups_defaults
+  # https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1386
+  node_groups_defaults = {
+    instance_types = []
+  }
 
   // TODO leverage spot instances ?
   node_groups = {
-    workers = {
+    workers-1 = {
       name             = "${local.cluster_name}-workers-${random_pet.this.id}-group"
       desired_capacity = var.workers_desired
       max_capacity     = var.workers_max
@@ -25,24 +34,13 @@ module "eks_cluster" {
       launch_template_id      = aws_launch_template.worker.id
       launch_template_version = aws_launch_template.worker.default_version
 
-      subnets = module.vpc.private_subnets
+      subnets = module.vpc.public_subnets
     }
   }
 
-
-  # TODO: multiple workers by environments
-
-  # does not work when specifying public and private subnets on the cluster module
-  # fargate_profiles = {
-  #   sls_worker = {
-  #     namespace = "default"
-  #     # Kubernetes labels for selection
-  #     labels = {
-  #       Type        = "serverless"
-  #     }
-  #     tags = local.default_tags
-  #   }
-  # }
+  map_roles = local.eks_roles
+  map_users = local.eks_users
+  tags      = local.default_tags
 
 }
 

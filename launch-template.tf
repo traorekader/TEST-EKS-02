@@ -1,6 +1,6 @@
 resource "aws_launch_template" "worker" {
   #checkov:skip=CKV_AWS_79 : issue in k8s when using metadata v2 tokens (see comments below)
-  name_prefix            = "${local.namespace}-eks-worker-"
+  name_prefix            = "${local.namespace}-eks-worker"
   description            = "EKS Worker Launch Template"
   update_default_version = true
 

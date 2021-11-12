@@ -9,7 +9,7 @@ repos:
     # - id: terraform_tfsec
     # - id: terraform_docs
     - id: terraform_validate
-      args: ['--envs=AWS_DEFAULT_REGION="eu-west-3"']
+      # args: ['--envs=AWS_DEFAULT_REGION="eu-west-3"']
     - id: terraform_docs
   args:
     - --hook-config=--path-to-file=README.md        # Valid UNIX path. I.e. ../TFDOC.md or docs/README.md etc.

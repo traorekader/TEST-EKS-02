@@ -1,6 +1,6 @@
 provider "aws" {
-  region  = var.aws_region
-  profile = "zsh-access-cli"
+  region = var.aws_region
+  # profile = "zsh-access-cli"
 }
 
 provider "kubernetes" {
